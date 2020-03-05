@@ -19,16 +19,35 @@ let birdY = 275;
 const gravity = 1;
 const pipes = [];
 
+pipes[0] = {
+    x: canvas.width,
+    y: 0
+}
+
 function draw(){
     ctx.drawImage(background, 0, 0);
-    ctx.drawImage(topPipe, canvas.width, 0)
-    ctx.drawImage(bottomPipe, canvas.width, topPipe.height + 75)
-    ctx.drawImage(ground, 0, canvas.height - 106);
+
+    for(let i = 0; i < pipes.length; i++){
+        ctx.drawImage(topPipe, pipes[i].x, pipes[i].y)
+        ctx.drawImage(bottomPipe, pipes[i].x, pipes[i].y + topPipe.height + 75)
+
+        pipes[i].x--
+    }
+
+    ctx.drawImage(ground, 0, canvas.height - ground.height);
     ctx.drawImage(bird, birdX, birdY);
 
-    birdY -= gravity;
+    birdY += gravity;
 
     requestAnimationFrame(draw)
 }
 
 draw();
+
+document.addEventListener('keydown', fly)
+
+function fly(event){
+    if(event.keyCode === 32 || event.keyCode === 38){
+        birdY -= 25;
+    }
+}
