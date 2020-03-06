@@ -39,6 +39,7 @@ const gravity = 1.5;
 let gap = 95;
 const pipes = [];
 let score = 0;
+sessionStorage.setItem('highScore', 0);
 
 window.onload = function(){
     ctx.drawImage(background, 0, 0)
@@ -74,6 +75,9 @@ function draw(){
             if(pipes[i].x === 25){
                 pointSound.play()
                 score++
+                if(score > sessionStorage.getItem('highScore')){
+                    sessionStorage.setItem('highScore', score);
+                }
             }
 
             if(bird.width + flappyBird.x >= pipes[i].x && flappyBird.x <= pipes[i].x + topPipe.width && (flappyBird.y <= pipes[i].y + topPipe.height || flappyBird.y + bird.height >= pipes[i].y + topPipe.height + gap) || flappyBird.y + bird.height >= canvas.height - ground.height){
@@ -91,10 +95,10 @@ function draw(){
 
                 ctx.font = 'bold 20px Orbitron'
                 ctx.fillText(score, 235, 260)
+                ctx.fillText(sessionStorage.getItem('highScore'), 236, 320)
                 ctx.drawImage(ground, 0, canvas.height - ground.height)
                 pipes.splice(0)
                 cancelAnimationFrame(animation)
-                // location.reload()
             }
         }
 
@@ -102,7 +106,7 @@ function draw(){
         ctx.drawImage(bird, flappyBird.x, flappyBird.y);
         ctx.fillStyle = '#FFF';
         ctx.font = '30px Orbitron';
-        ctx.fillText(`${score}`, 150, 40)
+        ctx.fillText(`${score}`, canvas.width / 2, 40)
 
         flappyBird.y += gravity;
 
