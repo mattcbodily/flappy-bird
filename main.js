@@ -2,6 +2,7 @@ const canvas = document.getElementById('game-board');
 const ctx = canvas.getContext('2d');
 
 const background = new Image();
+const logo = new Image();
 const ground = new Image();
 const topPipe = new Image();
 const bottomPipe = new Image();
@@ -13,6 +14,7 @@ const gold = new Image();
 const platinum = new Image();
 
 background.src = 'assets/background.png';
+logo.src = 'assets/logo.png';
 ground.src = 'assets/ground.png';
 topPipe.src = 'assets/top-pipe.png';
 bottomPipe.src = 'assets/bottom-pipe.png';
@@ -49,8 +51,9 @@ let score = 0;
 sessionStorage.setItem('highScore', 0);
 
 window.onload = function(){
-    ctx.drawImage(background, 0, 0)
-    ctx.drawImage(ground, 0, canvas.height - ground.height)
+    ctx.drawImage(background, 0, 0);
+    ctx.drawImage(logo, 40, 230);
+    ctx.drawImage(ground, 0, canvas.height - ground.height);
 }
 
 function draw(){
@@ -105,8 +108,8 @@ function draw(){
                 }
 
                 ctx.font = 'bold 20px Orbitron';
-                ctx.fillText(score, 235, 260);
-                ctx.fillText(sessionStorage.getItem('highScore'), 236, 320);
+                ctx.fillText(score, 248, 260);
+                ctx.fillText(sessionStorage.getItem('highScore'), 249, 320);
                 ctx.drawImage(ground, 0, canvas.height - ground.height);
                 pipes.splice(0);
                 activeGame = false;
@@ -129,6 +132,9 @@ function draw(){
 document.addEventListener('keydown', function(event){
     if(event.keyCode === 13 && activeGame === false){
         let timer = 3;
+
+        ctx.drawImage(background, 0, 0);
+        ctx.drawImage(ground, 0, canvas.height - ground.height);
         ctx.font = 'bold 30px Orbitron';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#FFFFFF';
@@ -138,7 +144,7 @@ document.addEventListener('keydown', function(event){
         //initialize starting variable values and start animation
         let gamePrep = setInterval(() => {
             ctx.drawImage(background, 0, 0);
-            ctx.drawImage(ground, 0, canvas.height - ground.height)
+            ctx.drawImage(ground, 0, canvas.height - ground.height);
             ctx.fillText('Get Ready', canvas.width / 2, 230);
             ctx.fillText(timer - 1, canvas.width / 2, 270);
             timer--
