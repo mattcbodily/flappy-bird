@@ -17,7 +17,7 @@ let birdX = 25;
 let birdY = 275;
 
 const gravity = 1.5;
-let gap = 90;
+let gap = 95;
 const pipes = [];
 
 
@@ -40,7 +40,7 @@ function draw(){
         if(pipes[i].x === 125){
             pipes.push({
                 x: canvas.width, 
-                y: Math.floor(Math.random() * (topPipe.height - 75)) - topPipe.height
+                y: Math.floor(Math.random() * (topPipe.height)) - topPipe.height
             });
         }
 
@@ -64,13 +64,13 @@ function draw(){
     requestAnimationFrame(draw)
 }
 
-draw();
+// draw();
 
-// document.addEventListener('keydown', function(event){
-//     if(event.keyCode === 13){
-//         draw();
-//     }
-// })
+document.addEventListener('keydown', function(event){
+    if(event.keyCode === 13){
+        draw();
+    }
+})
 
 document.addEventListener('keydown', function(event){
     if(event.keyCode === 32 || event.keyCode === 38){
