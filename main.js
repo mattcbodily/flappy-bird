@@ -23,17 +23,24 @@ silver.src = 'assets/silver-medal.png';
 gold.src = 'assets/gold-medal.png';
 platinum.src = 'assets/platinum-medal.png';
 
+const backgroundMusic = new Audio();
 const pointSound = new Audio();
 const flyingSound = new Audio();
+const explosion = new Audio();
 
+backgroundMusic.src = "assets/feelin-good.mp3";
 pointSound.src = 'assets/point-sound.wav';
 flyingSound.src = 'assets/flying-sound.mp3';
+explosion.src = 'assets/explosion.mp3';
+
+backgroundMusic.loop = 'true';
 
 function Bird(){
     this.x = 25;
     this.y = 275;
 }
 
+let activeGame = false;
 let flappyBird;
 const gravity = 1.5;
 let gap = 95;
@@ -44,10 +51,10 @@ sessionStorage.setItem('highScore', 0);
 window.onload = function(){
     ctx.drawImage(background, 0, 0)
     ctx.drawImage(ground, 0, canvas.height - ground.height)
-    ctx.drawImage(bird, 25, 275)
 }
 
 function draw(){
+    backgroundMusic.play();
     flappyBird = new Bird();
     score = 0;
 
@@ -57,6 +64,7 @@ function draw(){
     }
 
     return (function animate(){
+        activeGame = true;
         ctx.drawImage(background, 0, 0);
 
         for(let i = 0; i < pipes.length; i++){
@@ -81,24 +89,28 @@ function draw(){
             }
 
             if(bird.width + flappyBird.x >= pipes[i].x && flappyBird.x <= pipes[i].x + topPipe.width && (flappyBird.y <= pipes[i].y + topPipe.height || flappyBird.y + bird.height >= pipes[i].y + topPipe.height + gap) || flappyBird.y + bird.height >= canvas.height - ground.height){
-                ctx.drawImage(scoreboard, 20, 200)
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+                explosion.play();
+                ctx.drawImage(scoreboard, 20, 200);
 
                 if(score >= 10 && score <= 24){
-                    ctx.drawImage(bronze, 50, 248)
+                    ctx.drawImage(bronze, 50, 248);
                 } else if(score >= 25 && score <= 49){
-                    ctx.drawImage(silver, 50, 248)
+                    ctx.drawImage(silver, 50, 248);
                 } else if(score >= 50 && score <= 99){
-                    ctx.drawImage(gold, 50, 248)
+                    ctx.drawImage(gold, 50, 248);
                 } else if(score >= 100){
-                    ctx.drawImage(platinum, 50, 248)
+                    ctx.drawImage(platinum, 50, 248);
                 }
 
-                ctx.font = 'bold 20px Orbitron'
-                ctx.fillText(score, 235, 260)
-                ctx.fillText(sessionStorage.getItem('highScore'), 236, 320)
-                ctx.drawImage(ground, 0, canvas.height - ground.height)
-                pipes.splice(0)
-                cancelAnimationFrame(animation)
+                ctx.font = 'bold 20px Orbitron';
+                ctx.fillText(score, 235, 260);
+                ctx.fillText(sessionStorage.getItem('highScore'), 236, 320);
+                ctx.drawImage(ground, 0, canvas.height - ground.height);
+                pipes.splice(0);
+                activeGame = false;
+                cancelAnimationFrame(animation);
             }
         }
 
@@ -115,12 +127,32 @@ function draw(){
 }
 
 document.addEventListener('keydown', function(event){
-    if(event.keyCode === 13){
+    if(event.keyCode === 13 && activeGame === false){
+        let timer = 3;
+        ctx.font = 'bold 30px Orbitron';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText('Get Ready', canvas.width / 2, 230)
+        ctx.fillText(timer, canvas.width / 2, 270)
+        
         //initialize starting variable values and start animation
-        draw();
+        let gamePrep = setInterval(() => {
+            ctx.drawImage(background, 0, 0);
+            ctx.drawImage(ground, 0, canvas.height - ground.height)
+            ctx.fillText('Get Ready', canvas.width / 2, 230);
+            ctx.fillText(timer - 1, canvas.width / 2, 270);
+            timer--
+            if(timer === 0){
+                draw();
+                timer = 3;
+                clearInterval(gamePrep);
+            }
+        }, 1000)
     } else if(event.keyCode === 32 || event.keyCode === 38){
         //flappyBird fly functionality
-        flyingSound.play()
+        if(activeGame === true){
+            flyingSound.play()
+        }
         flappyBird.y -= 30;
     } else if(event.keyCode === 40){
         //flappyBird fall functionality
